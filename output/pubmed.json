@@ -1,0 +1,21 @@
+[
+  {
+    "source_url": "https://pubmed.ncbi.nlm.nih.gov/31452104/",
+    "source_type": "pubmed",
+    "author": "Gabriela Bitencourt-Ferreira, Walter Filgueira de Azevedo",
+    "published_date": "2019",
+    "language": "en",
+    "region": "global",
+    "topic_tags": [
+      "ligand",
+      "autodock",
+      "virtual docker",
+      "protein ligand",
+      "docking simulation"
+    ],
+    "trust_score": 0.675,
+    "content_chunks": [
+      "Molegro Virtual Docker is a protein-ligand docking simulation program that allows us to carry out docking simulations in a fully integrated computational package. MVD has been successfully applied to hundreds of different proteins, with docking performance similar to other docking programs such as AutoDock4 and AutoDock Vina. The program MVD has four search algorithms and four native scoring functions. Considering that we may have water molecules or not in the docking simulations, we have a total of 32 docking protocols. The integration of the programs SAnDReS ( https://github.com/azevedolab/sandres ) and MVD opens the possibility to carry out a detailed statistical analysis of docking results, which adds to the native capabilities of the program MVD. In this chapter, we describe a tutorial to carry out docking simulations with MVD and how to perform a statistical analysis of the docking results with the program SAnDReS. To illustrate the integration of both programs, we describe the redocking simulation focused the cyclin-dependent kinase 2 in complex with a competitive inhibitor."
+    ]
+  }
+]
