@@ -1,0 +1,15 @@
+# Data Source Configuration
+# Define URLs for blogs, YouTube videos, and PubMed articles
+
+blogs:
+  # Alternative blog sources that allow scraping (avoiding Medium and rate-limited sites)
+  - https://www.ibm.com/topics/machine-learning
+  - https://www.geeksforgeeks.org/introduction-machine-learning/
+  - https://www.w3schools.com/ai/ai_machine_learning.asp
+
+youtube:
+  - https://www.youtube.com/watch?v=aircAruvnKk
+  - https://www.youtube.com/watch?v=ua-CiDNNj30
+
+pubmed:
+  - https://pubmed.ncbi.nlm.nih.gov/31452104/
