@@ -1,7 +1,5 @@
 # Data Scraping & Trust Scoring Assignment Report
 
-**Student:** Anurag Chaubey  
-**Date:** March 11, 2026  
 **Project:** Multi-Source Data Trust Pipeline
 
 ---
