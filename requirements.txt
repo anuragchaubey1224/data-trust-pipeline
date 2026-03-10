@@ -1,0 +1,22 @@
+# Core Dependencies for Data Trust Pipeline
+
+# Configuration Management
+pyyaml>=6.0
+
+# Web Scraping
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+certifi>=2023.7.22
+readability-lxml>=0.8.1
+
+# YouTube Scraping
+yt-dlp>=2024.0.0
+youtube-transcript-api>=0.6.0
+
+# Text Processing
+langdetect>=1.0.9
+
+# Topic Tagging / NLP
+keybert>=0.8.0
+sentence-transformers>=2.2.0
