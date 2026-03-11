@@ -9,6 +9,8 @@ cd data-trust-pipeline
 
 # Create virtual environment
 python3 -m venv venv
+        (OR)
+python -m venv venv
 
 # Activate environment
 source venv/bin/activate      # macOS / Linux
