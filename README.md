@@ -1,5 +1,13 @@
-# Data Trust Pipeline
+For quick review:
 
+1️⃣ ASSIGNMENT_SUMMARY.md → 2 page overview
+
+2️⃣ ASSIGNMENT_REPORT.md → technical explanation
+
+3️⃣ EDGE_CASES.md → real-world handling
+
+
+# Data Trust Pipeline
 A production-ready data ingestion pipeline that scrapes, processes, and scores content from multiple sources (blogs, YouTube, PubMed) for downstream analysis and storage.
 
 ## Project Overview
@@ -13,6 +21,45 @@ This assignment implements an end-to-end data pipeline that:
   
 **Processing Capacity:** 6 sources in ~22 seconds (70,098 words, 282 chunks)  
 **Success Rate:** 100% with comprehensive edge case handling
+
+---
+
+## 📚 Documentation Guide
+
+**👋 New here?** This project has comprehensive documentation organized for different audiences.
+
+### For Recruiters & Quick Evaluation (10 minutes):
+
+1. **[ASSIGNMENT_SUMMARY.md](ASSIGNMENT_SUMMARY.md)** ⭐ **START HERE**
+   - 2-page concise project overview
+   - Assignment requirements compliance
+   - Implementation approach and results
+   - Perfect for initial evaluation
+
+2. **[QUICKSTART.md](QUICKSTART.md)** - Verify it works (5 minutes)
+   - Setup and run the pipeline
+   - See 4 JSON output files generated
+   - Validate with test suite
+
+### For Technical Deep Dive (30+ minutes):
+
+3. **This README** - Complete technical reference
+   - Architecture overview
+   - Component details
+   - Setup instructions and troubleshooting
+
+4. **[ASSIGNMENT_REPORT.md](ASSIGNMENT_REPORT.md)** - Detailed technical analysis
+   - Algorithm explanations with diagrams
+   - Real-world performance metrics
+   - Edge case handling strategies
+
+5. **[EDGE_CASES.md](EDGE_CASES.md)** - Problem-solving examples
+   - Real-world scenarios tested
+   - System responses and solutions
+
+**Recommended reading order:** 1 → 2 → 3 → 4 → 5
+
+---
 
 ## Assignment Requirements Fulfilled
 
@@ -151,6 +198,16 @@ data-trust-pipeline/
 ├── pipeline/
 │   └── run_pipeline.py           # Orchestrates complete workflow
 │
+├── tests/                        # Component test suite
+│   ├── test_blog_scraper.py
+│   ├── test_youtube_scraper.py
+│   ├── test_pubmed_scraper.py
+│   ├── test_text_cleaner.py
+│   ├── test_language_detector.py
+│   ├── test_topic_tagger.py
+│   ├── test_chunker.py
+│   ├── test_trust_score.py
+│   └── test_json_writer.py
 │
 ├── utils/
 │   ├── __init__.py
@@ -158,8 +215,16 @@ data-trust-pipeline/
 │   └── split_output.py           # Output file splitting utility
 │
 ├── output/                       # Generated JSON outputs
-├── requirements.txt
-└── README.md
+│   ├── scraped_data.json         # Unified file (all sources)
+│   ├── blogs.json                # Blog sources only
+│   ├── youtube.json              # YouTube sources only
+│   └── pubmed.json               # PubMed sources only
+│
+├── test_all.py                   # ⭐ Master test suite (5 comprehensive tests)
+├── requirements.txt              # Python dependencies
+├── ASSIGNMENT_SUMMARY.md         # ⭐ Concise assignment overview (1-2 pages)
+├── README.md                     # Complete documentation
+└── QUICKSTART.md                 # Quick setup guide
 ```
 
 ## Component Details
@@ -245,6 +310,40 @@ data-trust-pipeline/
 
 **Final Score:** Weighted sum, normalized to 0.0-1.0 range
 
+### Abuse Prevention Logic
+
+The trust scoring system includes safeguards against score manipulation:
+
+**1. Fake Authors**
+- Cross-references academic credentials (PhD, Dr, MD) with content quality
+- Penalizes missing authors (0.3 neutral score) rather than assuming credible
+- Multiple author detection prevents single bad actor from dominating score
+- Author credibility weighted with other factors - not standalone
+
+**2. SEO Spam Blogs**
+- Domain reputation scoring penalizes unknown domains (0.3 score)
+- Educational (.edu) and government (.gov) domains receive higher trust (0.7)
+- Content quality factors (citations, research keywords) must align with domain reputation
+- Low-quality domains + no citations = compound penalty
+
+**3. Misleading Medical Content**
+- Critical penalty (0.0) for medical topics without disclaimers
+- Medical content detection via keywords: health, medical, treatment, diagnosis, etc.
+- Prevents health misinformation from receiving high trust scores
+- Disclaimer requirement enforced for healthcare-related content
+
+**4. Outdated Information**
+- Strong recency penalties prevent promotion of obsolete content
+- Exponential decay: content >10 years receives 0.2 score (20% of maximum)
+- Even highly credentialed sources lose trust if information is stale
+- Protects against outdated medical practices or deprecated technical information
+
+**5. Domain Authority Gaming**
+- Hardcoded domain reputation prevents new spam domains from ranking high
+- PubMed and academic journals receive highest trust (0.9)
+- YouTube educational channels scored moderately (0.5) regardless of popularity
+- Unknown domains must prove credibility through citations and author credentials
+
 ### 4. Storage
 
 **JSON Writer** (`storage/json_writer.py`)
@@ -255,7 +354,36 @@ data-trust-pipeline/
 
 ## Testing
 
-Run individual component tests:
+### Quick Verification
+
+Before running the full pipeline, verify your installation with the master test suite:
+
+```bash
+python3 test_all.py
+```
+
+**Expected output:**
+```
+✓ PASS  Configuration
+✓ PASS  Blog Scraper
+✓ PASS  YouTube Scraper
+✓ PASS  PubMed Scraper
+✓ PASS  Unified Pipeline
+
+✓ ALL TESTS PASSED (5/5)
+```
+
+This validates:
+- Configuration loading from YAML
+- All scraper implementations work correctly
+- End-to-end pipeline integration
+- All dependencies are properly installed
+
+If all tests pass, your environment is correctly configured and ready to run the full pipeline.
+
+### Individual Component Tests
+
+For detailed debugging, run individual component tests:
 
 ```bash
 # Scraper tests
@@ -368,9 +496,12 @@ sentence-transformers>=2.2.0        # BERT embeddings
 
 ## Documentation
 
+- **[ASSIGNMENT_SUMMARY.md](ASSIGNMENT_SUMMARY.md)** - ⭐ Concise 1-2 page assignment overview (submission report)
 - [ASSIGNMENT_REPORT.md](ASSIGNMENT_REPORT.md) - Detailed technical report with algorithms and architecture
 - [EDGE_CASES.md](EDGE_CASES.md) - Real-world edge case examples with system responses
 - [QUICKSTART.md](QUICKSTART.md) - 3-minute setup and verification guide
+- [PUBMED_API_IMPLEMENTATION.md](PUBMED_API_IMPLEMENTATION.md) - PubMed API integration details
+- [TEXT_CLEANER_GUIDE.md](TEXT_CLEANER_GUIDE.md) - Text cleaning component documentation
 
 
 ## Troubleshooting
