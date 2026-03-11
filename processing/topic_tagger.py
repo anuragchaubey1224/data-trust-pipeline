@@ -5,7 +5,6 @@ This module provides topic extraction functionality for cleaned text content.
 It uses KeyBERT to automatically extract relevant keywords and topics from text,
 which helps in content categorization and semantic understanding.
 
-Author: Data Trust Pipeline Team
 """
 
 import logging

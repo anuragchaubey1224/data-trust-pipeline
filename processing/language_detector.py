@@ -5,7 +5,6 @@ This module provides language detection functionality for cleaned text content.
 It identifies the language of text using the langdetect library and returns
 ISO language codes.
 
-Author: Data Trust Pipeline Team
 """
 
 import logging

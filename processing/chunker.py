@@ -5,7 +5,6 @@ This module provides text chunking functionality for splitting long content
 into overlapping chunks. This is essential for processing long documents
 while maintaining context continuity between chunks.
 
-Author: Data Trust Pipeline Team
 """
 
 import logging

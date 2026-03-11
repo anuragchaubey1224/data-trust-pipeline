@@ -5,7 +5,6 @@ This module provides text cleaning and normalization functionality for scraped c
 It prepares raw text for downstream NLP processing such as language detection,
 topic tagging, and text chunking.
 
-Author: Data Trust Pipeline Team
 """
 
 import re
