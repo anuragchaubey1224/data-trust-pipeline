@@ -19,7 +19,7 @@ This assignment implements an end-to-end data pipeline that:
 4. Calculates trust scores based on 5 credibility factors
 5. Stores results in structured JSON format
   
-**Processing Capacity:** 6 sources in ~22 seconds (70,098 words, 282 chunks)  
+**Processing Capacity:** 6 sources in ~22 seconds (70,098 words, 284 chunks)  
 **Success Rate:** 100% with comprehensive edge case handling
 
 ---
@@ -34,7 +34,6 @@ This assignment implements an end-to-end data pipeline that:
    - 2-page concise project overview
    - Assignment requirements compliance
    - Implementation approach and results
-   - Perfect for initial evaluation
 
 2. **[QUICKSTART.md](QUICKSTART.md)** - Verify it works (5 minutes)
    - Setup and run the pipeline
@@ -929,6 +928,7 @@ sentence-transformers>=2.2.0        # BERT embeddings
 - Duplicate detection
 - Configurable parameters via YAML
 - REST API for pipeline execution
+- Proxy ip technique to scrpae anti bot sites
 
 ---
 
@@ -1293,5 +1293,3 @@ sentence-transformers>=2.2.0        # BERT embeddings
 - Add delay between requests if needed
 
 
-**Total development time:** ~40 hours  
-**Final status:** Production-ready with comprehensive testing
