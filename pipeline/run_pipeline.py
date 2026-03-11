@@ -384,6 +384,41 @@ class DataPipeline:
                 del data['_cleaned_content']
             return data
     
+    def _split_output_by_type(self, data: List[Dict]):
+        """
+        Split unified data into separate files by source type.
+        
+        Creates three additional output files:
+            - output/blogs.json (blog sources)
+            - output/youtube.json (YouTube sources)
+            - output/pubmed.json (PubMed sources)
+        
+        Args:
+            data: List of processed data dictionaries
+        """
+        try:
+            # Split by source type
+            blogs = [item for item in data if item.get('source_type') == 'blog']
+            youtube = [item for item in data if item.get('source_type') == 'youtube']
+            pubmed = [item for item in data if item.get('source_type') == 'pubmed']
+            
+            # Write separate files
+            if blogs:
+                self.storage_writer.write_json(blogs, 'output/blogs.json')
+                self.logger.info(f"✓ Created output/blogs.json ({len(blogs)} sources)")
+            
+            if youtube:
+                self.storage_writer.write_json(youtube, 'output/youtube.json')
+                self.logger.info(f"✓ Created output/youtube.json ({len(youtube)} sources)")
+            
+            if pubmed:
+                self.storage_writer.write_json(pubmed, 'output/pubmed.json')
+                self.logger.info(f"✓ Created output/pubmed.json ({len(pubmed)} sources)")
+            
+        except Exception as e:
+            self.logger.error(f"Error splitting output by type: {e}")
+            # Don't fail the pipeline if splitting fails
+    
     def run(self, config_path: str = "config/sources.yaml", output_path: str = "output/scraped_data.json"):
         """
         Execute the complete data pipeline end-to-end.
@@ -458,6 +493,10 @@ class DataPipeline:
             self.logger.info("\n[STAGE 5/5] Writing final dataset to JSON...")
             self.storage_writer.write_json(scored_data, output_path)
             
+            # Split output by source type
+            self.logger.info("\n[STAGE 5/5] Splitting output by source type...")
+            self._split_output_by_type(scored_data)
+            
             # Calculate execution time
             end_time = datetime.now()
             duration = (end_time - start_time).total_seconds()
@@ -467,7 +506,11 @@ class DataPipeline:
             self.logger.info("PIPELINE EXECUTION COMPLETE")
             self.logger.info("=" * 80)
             self.logger.info(f"Total sources processed: {len(scored_data)}")
-            self.logger.info(f"Output file: {output_path}")
+            self.logger.info(f"Output files created:")
+            self.logger.info(f"  • {output_path} (unified)")
+            self.logger.info(f"  • output/blogs.json")
+            self.logger.info(f"  • output/youtube.json")
+            self.logger.info(f"  • output/pubmed.json")
             self.logger.info(f"Execution time: {duration:.2f} seconds")
             self.logger.info("=" * 80)
             
