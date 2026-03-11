@@ -17,9 +17,6 @@ The pipeline executes the following steps:
     6. Chunk content into smaller pieces
     7. Calculate trust score
     8. Store final results in output/scraped_data.json
-
-Author: Senior Data Engineer
-Date: March 2026
 """
 
 import sys
