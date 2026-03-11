@@ -2,12 +2,18 @@
 """
 Split unified output JSON into separate files by source type.
 
+NOTE: As of the latest version, the pipeline automatically creates
+split files (blogs.json, youtube.json, pubmed.json) when running
+pipeline/run_pipeline.py. This utility is kept for manual splitting
+if needed.
+
 This script splits output/scraped_data.json into:
 - output/blogs.json (blog articles)
 - output/youtube.json (YouTube videos)
 - output/pubmed.json (PubMed articles)
 
-As required by the assignment submission format.
+Usage:
+    python3 utils/split_output.py
 """
 
 import json
