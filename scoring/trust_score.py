@@ -5,7 +5,6 @@ This module provides trust scoring functionality for evaluating the credibility
 and reliability of content sources. It uses multiple credibility signals to
 compute a weighted trust score between 0 and 1.
 
-Author: Data Trust Pipeline Team
 """
 
 import re
