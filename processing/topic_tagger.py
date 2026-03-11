@@ -69,9 +69,14 @@ class TopicTagger:
             self.logger.info("Install with: pip install keybert sentence-transformers")
         else:
             try:
-                self.logger.info(f"Initializing KeyBERT model: {model_name}")
+                self.logger.info("⏳ Initializing KeyBERT model...")
+                self.logger.info(f"   Model: {model_name}")
+                self.logger.info("   First run: downloading 420MB model (one-time)")
+                self.logger.info("   This may take 2-5 minutes on slow connections")
+                
                 self.model = KeyBERT(model=model_name)
-                self.logger.info("TopicTagger initialized successfully")
+                
+                self.logger.info("✓ Model loaded successfully")
             except Exception as e:
                 self.logger.error(f"Failed to initialize KeyBERT model: {e}")
                 self.model = None
