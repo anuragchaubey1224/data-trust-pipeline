@@ -31,6 +31,9 @@ def split_output():
     if not input_file.exists():
         print(f"❌ Error: {input_file} not found")
         print("   Run the pipeline first: python3 pipeline/run_pipeline.py")
+        print()
+        print("   ℹ️  NOTE: Pipeline now automatically creates split files!")
+        print("   This utility is only needed for manual re-splitting.")
         return
     
     # Load unified data
