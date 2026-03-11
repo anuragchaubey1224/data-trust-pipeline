@@ -22,7 +22,31 @@ pip install -r requirements.txt
 
 ---
 
-## 2. Run the Pipeline
+## 2. Verify Installation
+
+Before running the full pipeline, verify all components are working:
+
+```bash
+python3 test_all.py
+```
+
+Expected output:
+
+```
+✓ PASS  Configuration
+✓ PASS  Blog Scraper
+✓ PASS  YouTube Scraper
+✓ PASS  PubMed Scraper
+✓ PASS  Unified Pipeline
+
+✓ ALL TESTS PASSED (5/5)
+```
+
+If all tests pass, you're ready to run the complete pipeline!
+
+---
+
+## 3. Run the Pipeline
 
 ```bash
 python3 pipeline/run_pipeline.py
@@ -39,7 +63,7 @@ The pipeline will:
 
 ---
 
-## 3. View Output
+## 4. View Output
 
 Output files are generated automatically in the `output/` folder:
 
