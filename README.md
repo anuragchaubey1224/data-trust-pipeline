@@ -74,19 +74,27 @@ INFO - Scraping completed: 6/6 successful
 INFO - Processing content...
 INFO - Calculating trust scores...
 INFO - Storing results in output/scraped_data.json
+INFO - ✓ Created output/blogs.json (3 sources)
+INFO - ✓ Created output/youtube.json (2 sources)
+INFO - ✓ Created output/pubmed.json (1 source)
 INFO - Pipeline completed in 22.45 seconds
 ```
 
+**Output files automatically created:**
+- `output/scraped_data.json` - Unified file with all 6 sources
+- `output/blogs.json` - Blog sources only (3 sources)
+- `output/youtube.json` - YouTube sources only (2 sources)
+- `output/pubmed.json` - PubMed sources only (1 source)
+
 ### 3. View Results
 
-**Unified output:**
-```bash
-cat output/scraped_data.json
-```
+All output files are automatically created in the `output/` directory:
 
-**Split by source type:**
 ```bash
-python3 utils/split_output.py
+# View unified output (all sources)
+cat output/scraped_data.json
+
+# View individual source type files
 cat output/blogs.json
 cat output/youtube.json
 cat output/pubmed.json
