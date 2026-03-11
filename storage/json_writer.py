@@ -4,7 +4,6 @@ JSON Storage Writer for Data Trust Pipeline
 This module provides JSON storage functionality for saving processed content
 to structured JSON files following a standardized schema.
 
-Author: Data Trust Pipeline Team
 """
 
 import json
