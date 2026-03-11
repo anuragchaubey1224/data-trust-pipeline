@@ -1,301 +1,103 @@
-# Assignment Summary - Data Trust Pipeline
-  
-**Project:** Multi-Source Data Scraping & Trust Scoring System
+# Data Scraping & Trust Scoring System – Assignment Report
 
-## Objective
+## Introduction
 
-Design and implement a production-ready data scraping pipeline that extracts structured content from multiple platforms and evaluates source reliability using a trust scoring algorithm.
+In this assignment, I designed and implemented a multi-source data scraping pipeline that collects structured information from different types of online platforms and evaluates the reliability of each source using a rule-based trust scoring system. The objective of this project was to build a system capable of extracting content from multiple platforms, structuring the extracted information into a standardized format, and estimating the credibility of each source using defined scoring logic.
 
----
-
-## Task 1: Multi-Source Web Scraper
-
-### Implementation Summary
-
-**Scraped Sources:**
-- ✅ 3 Blog Posts (IBM, W3Schools, GeeksforGeeks)
-- ✅ 2 YouTube Videos (3Blue1Brown, freeCodeCamp.org)
-- ✅ 1 PubMed Article (PMID: 31452104)
-
-**Technology Stack:**
-- **Blogs**: BeautifulSoup4 + readability-lxml for clean HTML parsing
-- **YouTube**: yt-dlp for metadata + youtube-transcript-api for transcripts
-- **PubMed**: NCBI E-utilities API with XML parsing
-
-
-## Tools & Libraries Used
-
-- **HTTP**: requests + certifi (SSL)
-- **HTML Parsing**: BeautifulSoup4 + lxml + readability-lxml
-- **YouTube**: yt-dlp + youtube-transcript-api
-- **XML Parsing**: lxml (PubMed API responses)
-- **NLP**: langdetect (language detection)
-- **Keyword Extraction**: KeyBERT + sentence-transformers
-- **Configuration**: PyYAML
-- **Testing**: Custom test suite (test_all.py)
-
-
-
-### Scraping Strategy
-
-**1. Blog Scraper** - 4-Phase Extraction:
-- Phase 1: HTML preprocessing (remove scripts, styles, navigation)
-- Phase 2: Sanitization (remove ads, comments, footers)
-- Phase 3: Readability extraction (article-focused content)
-- Phase 4: Fallback to manual <p> tag extraction
-
-**2. YouTube Scraper** - Metadata + Transcript:
-- Extract channel, title, publish date, and description via yt-dlp
-- Fetch full transcript using YouTube Transcript API
-- Fallback to description if transcript unavailable
-
-**3. PubMed Scraper** - API Integration:
-- REST API calls to NCBI E-utilities (ESearch + EFetch)
-- XML parsing for title, authors, journal, year, and abstract
-- Rate limit compliant (3 requests/second, free tier)
-
-### Metadata Extraction
-
-All sources extract:
-- ✅ Author/publisher name
-- ✅ Publication date (ISO format or year)
-- ✅ Page title or video title
-- ✅ Full content (article text, transcript, or abstract)
-
-### Automatic Topic Tagging
-
-**Method:** KeyBERT (BERT-based keyword extraction)
-- Uses sentence-transformers for semantic embeddings
-- Extracts top 5 bi-gram keywords per source
-- Cosine similarity scoring for relevance
-
-**Example output:**
-```json
-"topic_tags": ["machine learning", "neural networks", "deep learning", "python programming", "data science"]
-```
-
-### Content Chunking
-
-**Strategy:** Overlapping fixed-size chunks
-- Chunk size: 300 words
-- Overlap: 50 words (16.6%)
-- Preserves context across boundaries
-- Handles short content gracefully
-
-**Example:**
-```json
-"content_chunks": [
-  "Introduction to machine learning concepts...",
-  "...continued discussion about supervised learning...",
-  "...applications in healthcare and finance..."
-]
-```
-
-### Data Storage
-
-**Output Format:** Standardized JSON schema
-```json
-{
-  "source_url": "https://...",
-  "source_type": "blog | youtube | pubmed",
-  "author": "Author Name",
-  "published_date": "2024-03-10",
-  "language": "en",
-  "region": "global",
-  "topic_tags": ["keyword1", "keyword2", ...],
-  "trust_score": 0.65,
-  "content_chunks": ["chunk1", "chunk2", ...]
-}
-```
-
-**File Structure:**
-- `output/scraped_data.json` - Unified file (all 6 sources)
-- `output/blogs.json` - Blog sources only
-- `output/youtube.json` - YouTube sources only
-- `output/pubmed.json` - PubMed sources only
+The system collects data from three different types of sources: blog posts, YouTube videos, and PubMed research articles. The extracted data is processed, enriched with metadata and topic tags, and finally stored in structured JSON files.
 
 ---
 
-## Task 2: Trust Score System Design
+## Scraping Strategy
 
-### Algorithm Design
+To collect data from different types of platforms, I implemented separate scraping modules for each source type. Each scraper extracts relevant metadata and content while handling the unique structure of the respective platform.
 
-**Formula:**
-```
-Trust Score = (0.25 × AuthorCredibility) + (0.20 × CitationQuality) + 
-              (0.20 × DomainAuthority) + (0.20 × Recency) + 
-              (0.15 × MedicalDisclaimer)
-```
+### Blog Scraping
 
-**Output Range:** 0.0 (untrustworthy) to 1.0 (highly credible)
+For blog posts, I used BeautifulSoup and readability-lxml to extract clean article text from HTML pages. The blog scraping pipeline follows a multi-stage extraction strategy. First, the HTML document is preprocessed by removing scripts, style tags, navigation menus, and other non-content elements. After preprocessing, additional sanitization removes ads, comment sections, and footer elements that are not part of the main article.
 
-### Scoring Factors
-
-**1. Author Credibility (25% weight)**
-- PhD/Dr credentials: 0.9
-- Multiple authors: averaged score
-- No author: 0.3 (neutral penalty)
-
-**2. Citation Quality (20% weight)**
-- Research keywords detected: study, research, data, evidence
-- High citations (10+): 0.9
-- No citations: 0.3
-
-**3. Domain Authority (20% weight)**
-- PubMed/academic: 0.9
-- Educational sites (.edu): 0.7
-- YouTube: 0.5
-- Unknown: 0.3
-
-**4. Content Recency (20% weight)**
-- <1 year: 1.0
-- 3-5 years: 0.6
-- >10 years: 0.2
-
-**5. Medical Disclaimer (15% weight)**
-- Medical content without disclaimer: 0.0 (critical penalty)
-- Has disclaimer: 0.8
-- Non-medical: 0.4 (neutral)
-
-### Edge Cases Handled
-
-**1. Missing Metadata**
-- Missing author → Use neutral score (0.3)
-- Missing date → Use current year
-- Missing transcript → Use video description
-
-**2. Multiple Authors**
-- Average credibility scores across all co-authors
-- Prevents single bad actor from dominating
-
-**3. Non-English Content**
-- Automatic language detection via langdetect
-- Supports 55+ languages
-- Continues processing for all languages
-
-**4. Long Articles**
-- Chunking into 300-word segments
-- Maintains processing efficiency
-- Prevents memory overload
-
-**5. Anti-Scraping Protection**
-- Retry logic with exponential backoff
-- SSL certificate handling for macOS
-- User-agent and header management
-- Use Proxy ip for strict websites
-
-### Abuse Prevention
-
-**Fake Authors**
-- Pattern matching with content quality validation
-- Multiple author averaging prevents gaming
-
-**SEO Spam Blogs**
-- Domain reputation scoring penalizes unknown domains
-- Citation quality must align with domain claims
-
-**Misleading Medical Content**
-- Critical 0.0 penalty for medical topics without disclaimers
-- Keyword-based medical content detection
-
-**Outdated Information**
-- Strong recency decay prevents obsolete content promotion
-- >10 years = 0.2 maximum score
-
-### Trust Score: Assignment vs Industry
-
-**Assignment Approach (Implemented):**
-- Rule-based heuristic scoring
-- 5 credibility factors with fixed weights
-
-**Industry Production Systems:**
-- Machine learning models (e.g., Google's E-A-T)
-- Citation graph analysis (e.g., Google Scholar)
-- External API verification (ORCID for authors, CrossRef for citations)
-- Human fact-checker integration (NewsGuard model)
-
-**Why Rule-Based for This Assignment:**
-1. Transparent and explainable (critical for medical content)
-2. No training data required (greenfield project)
-3. Fast execution (<1ms per source)
-
-**Production Upgrade Path:**
-- Integrate CrossRef API for real citation counting
-- Add ORCID author verification
-- Implement ML-based fact-checking (post-MVP)
-- Build domain reputation database with feedback loop
-
+Once the page is cleaned, the readability algorithm is used to extract the primary article content. If the readability extraction fails, the system falls back to extracting text from paragraph tags. This layered approach improves robustness across different blog layouts.
 
 ---
 
-## Performance Metrics
+### YouTube Scraping
 
-**Test Run (6 sources):**
-- Processing time: 22.45 seconds
-- Words processed: 70,098 words
-- Chunks generated: 282 chunks
-- Success rate: 100% (6/6 sources)
+For YouTube videos, I extracted both metadata and textual content. The metadata, including channel name, video title, publish date, and description, is collected using the yt-dlp library. In addition to metadata, the system attempts to fetch the full transcript of the video using the YouTube Transcript API.
 
-**Per-Source Timing:**
-- Blogs: 2-5 seconds
-- YouTube: 3-8 seconds
-- PubMed: 1-2 seconds
+If the transcript is not available, the system falls back to using the video description as textual content. This ensures that some content is always available for further processing such as topic tagging and chunking.
 
 ---
 
-## Project Limitations
+### PubMed Scraping
 
-**Scraping:**
-- No support for JavaScript-rendered sites (requires Selenium/Playwright)
-- YouTube transcripts depend on content creator enabling captions
-- PubMed rate limited to 3 requests/second (free tier)
+For scientific articles, I used the NCBI E-utilities API provided by PubMed. The pipeline performs API requests to retrieve article information such as title, authors, journal name, publication year, and abstract.
 
-**Processing:**
-- Language detection less accurate for short text (<50 words)
-- Topic tagging requires 420MB model download on first run but handled using proper UX
-- Fixed 300-word chunk size (not configurable via config)
-
-**Trust Scoring:**
-- Simple pattern matching for author credentials (not comprehensive)
-- Limited hardcoded domain reputation list
-- No true citation counting (keyword-based only)
-- No fact-checking or content verification
-
-**Scalability:**
-- Sequential processing (no parallelization)
-- No caching (re-scrapes on every run)
-- JSON file storage only (not suitable for large-scale data)
-- All data loaded in memory before writing
+The response from the API is returned in XML format, which is parsed using the lxml library to extract the required fields. The system also respects PubMed’s rate limits by restricting requests to a safe frequency.
 
 ---
 
-## How to Run
+## Topic Tagging Method
 
-**Setup:**
-```bash
-python3 -m venv venv_data
-source venv_data/bin/activate
-pip install -r requirements.txt
-```
+To automatically identify the topics discussed in each source, I implemented a keyword extraction method using KeyBERT. KeyBERT leverages transformer-based sentence embeddings to identify the most relevant keywords from the content.
 
-**Verify Installation:**
-```bash
-python3 test_all.py
-# Expected: ✓ ALL TESTS PASSED (5/5)
-```
-
-**Run Pipeline:**
-```bash
-python3 pipeline/run_pipeline.py
-# Output: 4 JSON files in output/ directory
-```
+The algorithm extracts the top five keywords or key phrases from the content using semantic similarity scoring. These keywords serve as topic tags and provide a concise representation of the main themes of the article or video.
 
 ---
 
-## Deliverables
+## Content Chunking Strategy
 
-✅ **Source Code**: Complete modular pipeline with 9 core modules  
-✅ **Output Dataset**: 4 JSON files (unified + 3 source-specific files)  
-✅ **Documentation**: README.md, QUICKSTART.md, EDGE_CASES.md  
-✅ **Test Suite**: Master test suite + 9 individual component tests  
-  
+Long textual content is split into smaller segments to make downstream processing easier. I implemented a fixed-size chunking strategy where the content is divided into chunks of approximately 300 words with a small overlap between consecutive chunks.
+
+The overlap helps preserve contextual continuity between chunks and ensures that important information is not lost at chunk boundaries. This approach is particularly useful when preparing content for search systems or machine learning pipelines.
+
+---
+
+## Trust Score Algorithm
+
+To evaluate the reliability of each source, I designed a rule-based trust scoring system. The trust score ranges from 0 to 1 and is calculated using a weighted combination of several credibility factors.
+
+The final trust score is computed using the following factors:
+
+* Author credibility
+* Citation quality
+* Domain authority
+* Content recency
+* Presence of medical disclaimers
+
+Each factor contributes to the final score using predefined weights. For example, author credibility and domain authority contribute positively to the score, while missing citations or outdated content reduce the trust score.
+
+The rule-based approach was chosen because it is transparent, easy to interpret, and does not require training data.
+
+---
+
+## Edge Case Handling
+
+The system includes several mechanisms to handle common edge cases that occur during scraping and processing.
+
+If author information is missing, the system assigns a neutral credibility score rather than failing. When publication dates are unavailable, a fallback value is used to maintain scoring consistency. For YouTube videos without transcripts, the system uses the video description as an alternative text source.
+
+The pipeline also supports non-English content using automatic language detection. Additionally, long articles are automatically chunked to avoid memory issues during processing.
+
+---
+
+## Abuse Prevention Logic
+
+The trust scoring system also includes safeguards against potential manipulation or misleading content. For example, domains with low authority are penalized to reduce the impact of spam blogs. Medical content without proper disclaimers receives a significant penalty in the scoring system.
+
+The algorithm also discourages outdated information by applying recency penalties to older content. These safeguards help ensure that unreliable sources receive lower trust scores.
+
+---
+
+## Limitations
+
+Although the system performs well for the selected sources, there are several limitations. The scraper does not support JavaScript-rendered websites because it does not use browser automation tools such as Selenium or Playwright. In addition, YouTube transcripts are only available when captions are enabled by the content creator.
+
+The trust scoring algorithm currently relies on heuristic rules rather than real citation databases or fact-checking systems. Furthermore, the pipeline processes sources sequentially and stores data in JSON files, which may limit scalability for very large datasets.
+
+---
+
+## Conclusion
+
+In this project, I successfully implemented a multi-source scraping pipeline capable of collecting structured content from blogs, YouTube videos, and PubMed articles. The pipeline automatically extracts metadata, generates topic tags, splits content into chunks, and assigns a trust score to each source using a rule-based scoring algorithm.
+
+The system demonstrates how automated data collection and credibility evaluation can be combined into a unified pipeline. While the current implementation is suitable for small-scale data collection, it can be extended in the future with machine learning models, external credibility APIs, and distributed processing to support larger production systems.
