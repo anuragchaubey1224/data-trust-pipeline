@@ -37,7 +37,7 @@ python3 pipeline/run_pipeline.py
 
 Pipeline completed in ~22 seconds
 Success rate: 100% (6/6 sources)
-Total content chunks: 282
+Total content chunks: 284
 
 Output files created:
   • output/scraped_data.json (unified)
