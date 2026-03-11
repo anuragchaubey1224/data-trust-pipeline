@@ -151,16 +151,6 @@ data-trust-pipeline/
 ├── pipeline/
 │   └── run_pipeline.py           # Orchestrates complete workflow
 │
-├── tests/
-│   ├── test_blog_scraper.py
-│   ├── test_youtube_scraper.py
-│   ├── test_pubmed_scraper.py
-│   ├── test_text_cleaner.py
-│   ├── test_language_detector.py
-│   ├── test_topic_tagger.py
-│   ├── test_chunker.py
-│   ├── test_trust_score.py
-│   └── test_json_writer.py
 │
 ├── utils/
 │   ├── __init__.py
