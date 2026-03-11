@@ -31,20 +31,30 @@ python3 pipeline/run_pipeline.py
 ✓ Scraping 6 sources (3 blogs, 2 YouTube, 1 PubMed)
 ✓ Processing content (cleaning, language detection, topic tagging, chunking)
 ✓ Calculating trust scores (5-factor weighted algorithm)
-✓ Storing results in output/
+✓ Created output/blogs.json (3 sources)
+✓ Created output/youtube.json (2 sources)
+✓ Created output/pubmed.json (1 source)
 
 Pipeline completed in ~22 seconds
 Success rate: 100% (6/6 sources)
 Total content chunks: 282
+
+Output files created:
+  • output/scraped_data.json (unified)
+  • output/blogs.json
+  • output/youtube.json
+  • output/pubmed.json
 ```
 
 ### Step 3: View Results
+
+All 4 output files are automatically created:
+
 ```bash
-# View unified output
+# View unified output (all sources)
 cat output/scraped_data.json
 
-# Or view split outputs by source type
-python3 utils/split_output.py
+# View individual source type files (already created)
 cat output/blogs.json
 cat output/youtube.json
 cat output/pubmed.json
