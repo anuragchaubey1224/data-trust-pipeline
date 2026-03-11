@@ -28,7 +28,7 @@ This assignment implements an end-to-end data pipeline that:
 
 **👋 New here?** This project has comprehensive documentation organized for different audiences.
 
-### For Recruiters & Quick Evaluation (10 minutes):
+### For Quick Evaluation (10 minutes):
 
 1. **[ASSIGNMENT_SUMMARY.md](ASSIGNMENT_SUMMARY.md)** ⭐ **START HERE**
    - 2-page concise project overview
